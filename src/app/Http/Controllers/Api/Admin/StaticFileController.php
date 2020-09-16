@@ -42,9 +42,13 @@ class StaticFileController extends BaseController
             $data =  $request->content;
             if (strpos($file, $findme) > 0 && is_file($file)) {
                 $fileOpen = fopen($file, 'w');
-                fwrite($fileOpen, $data);
-                fclose($fileOpen);
-                return response()->file($file);
+                if (!$fileOpen) {
+                    throw new \Exception('Mở file không thành công');
+                } else {
+                    fwrite($fileOpen, $data);
+                    fclose($fileOpen);
+                    return response()->file($file);
+                }
             } else {
                 throw new \Exception('Không tìm thấy file');
             }
