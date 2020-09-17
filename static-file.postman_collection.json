@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "21c533d8-0165-489d-9432-bc4d4bd713e9",
+		"name": "static-file",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get file",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"file\":\"menu\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/admin/web/files",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"web",
+						"files"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit file",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"file\":\"menu/menu-level-3.blade.php\",\n    \"content\":\"<div class=\\\"container\\\">\\n<nav class=\\\"navbar navbar-expand-lg navbar-light bg-light style-menus\\\">\\n    <button class=\\\"navbar-toggler\\\" type=\\\"button\\\" data-toggle=\\\"collapse\\\" data-target=\\\"#navbarSupportedContent\\\" aria-controls=\\\"navbarSupportedContent\\\" aria-expanded=\\\"false\\\" aria-label=\\\"Toggle navigation\\\">\\n        <span class=\\\"navbar-toggler-icon\\\"><\\/span>\\n    <\\/button>\\n    <div class=\\\"collapse navbar-collapse\\\" id=\\\"navbarSupportedContent\\\">\\n        <div class=\\\"menu-level-3\\\">\\n        <ul class=\\\"navbar-nav mr-auto\\\">\\n\\n            @foreach ($getMenus->menus as $item)\\n            <li id=\\\"menus-{{$item->id}}\\\" class=\\\"menu nav-item \\\">\\n                <a class=\\\"nav-link\\\" href=\\\"{{ url($item->link) }}\\\">{{ $item->label }}<\\/a>\\n                {!! $item->renderSubmenu() !!}\\n            <\\/li>\\n            @endforeach\\n        <\\/ul>\\n        <\\/div>\\n\\n    <\\/div>\\n<\\/nav>\\n<\\/div>\\n\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/admin/web/files",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"admin",
+						"web",
+						"files"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
