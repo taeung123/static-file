@@ -4,8 +4,9 @@ namespace VCComponent\Laravel\File\Http\Controllers\Api\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 
-class StaticFileController extends BaseController
+class StaticFileController extends ApiController
 {
 
     public function __construct()
@@ -20,14 +21,17 @@ class StaticFileController extends BaseController
 
     public function index(Request $request)
     {
+        $user = $this->getAuthenticatedUser();
         if (!$request->file); {
             $file  = $request->file;
             $check = '.blade.php';
             if (strpos($file, $check) > 0 && is_file('../resources/views/' . $file)) {
                 return   response()->file('../resources/views/' . $file);
-            } else if (is_dir($file)) {
+            } else if (is_dir('../resources/views/' . $file)) {
                 $data =   scandir('../resources/views/' . $file);
                 return $data;
+            } else {
+                throw new \Exception('Không tìm thấy file');
             }
         }
         $data =   scandir('../resources/views');
@@ -36,6 +40,7 @@ class StaticFileController extends BaseController
 
     public function update(Request $request)
     {
+        $user = $this->getAuthenticatedUser();
         if (!$request->file); {
             $file  = '../resources/views/' . $request->file;
             $findme = '.blade.php';
