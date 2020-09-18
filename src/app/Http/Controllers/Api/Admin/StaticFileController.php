@@ -22,7 +22,7 @@ class StaticFileController extends ApiController
     public function index(Request $request)
     {
         $user = $this->getAuthenticatedUser();
-        if (!$request->file); {
+        if ($request->file) {
             $file  = $request->file;
             $check = '.blade.php';
             if (strpos($file, $check) > 0 && is_file('../resources/views/' . $file)) {
@@ -41,7 +41,7 @@ class StaticFileController extends ApiController
     public function update(Request $request)
     {
         $user = $this->getAuthenticatedUser();
-        if (!$request->file); {
+        if ($request->file) {
             $file  = '../resources/views/' . $request->file;
             $findme = '.blade.php';
             $data =  $request->content;
