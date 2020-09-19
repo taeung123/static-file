@@ -19,28 +19,60 @@ class StaticFileController extends ApiController
         }
     }
 
+    public function recursiveDirectoryIterator($directory = null, $files = array())
+    {
+        $iterator = new \DirectoryIterator($directory);
+        foreach ($iterator as $index => $info) {
+            if ($info->isFile()) {
+                $list = array([
+                    'name' => $info->__toString(),
+                    'type' => 'file',
+                ]);
+                $files = array_merge_recursive($files, $list);
+            } elseif (!$info->isDot()) {
+                $list = array([
+                    'name' => $info->__toString(),
+                    'type' => 'folder',
+                    "sub_dir" => $this->recursiveDirectoryIterator(
+                        $directory . DIRECTORY_SEPARATOR . $info->__toString()
+                    )
+                ]);
+                if (!empty($files))
+                    $files = array_merge_recursive($files, $list);
+                else {
+                    $files = $list;
+                }
+            }
+        }
+        return $files;
+    }
+
     public function index(Request $request)
     {
         $user = $this->getAuthenticatedUser();
-        if ($request->file) {
-            $file  = $request->file;
-            $check = '.blade.php';
-            if (strpos($file, $check) > 0 && is_file('../resources/views/' . $file)) {
-                return   response()->file('../resources/views/' . $file);
-            } else if (is_dir('../resources/views/' . $file)) {
-                $data =   scandir('../resources/views/' . $file);
-                return $data;
-            } else {
-                throw new \Exception('Không tìm thấy file');
-            }
+        $path = $request->path ? $request->path : '../resources/views';
+        $data =  $this->recursiveDirectoryIterator($path);
+        return response()->json($data);
+    }
+    public function getFileContent(Request $request)
+    {
+        $user = $this->getAuthenticatedUser();
+        if (!$request->file) {
+            throw new \Exception('Không tìm thấy file');
         }
-        $data =   scandir('../resources/views');
-        return $data;
+        $file  = $request->file;
+        $check = '.blade.php';
+        if (strpos($file, $check) > 0 && is_file('../resources/views/' . $file)) {
+            return   response()->file('../resources/views/' . $file);
+        } else {
+            throw new \Exception('Không tìm thấy file');
+        }
     }
 
     public function update(Request $request)
     {
         $user = $this->getAuthenticatedUser();
+
         if ($request->file) {
             $file  = '../resources/views/' . $request->file;
             $findme = '.blade.php';

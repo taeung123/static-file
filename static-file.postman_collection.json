@@ -77,6 +77,17 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "get file content",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
