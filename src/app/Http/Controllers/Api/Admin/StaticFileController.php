@@ -56,21 +56,18 @@ class StaticFileController extends ApiController
     }
     public function getFileContent(Request $request)
     {
-        $user = $this->getAuthenticatedUser();
-
+        $user      = $this->getAuthenticatedUser();
         $folerEdit = config('static-file.folder_edit');
-        if (strpos($request->file, $folerEdit) !== 0) {
-            throw new \Exception('Không thể edit file');
-        }
+
         $file = $request->file;
+
         if (!$file) {
             throw new \Exception('Không tìm thấy file');
         }
-        if (is_file('../resources/views/' . $file)) {
-            return response()->file('../resources/views/' . $file);
-        } else {
+        if (!is_file('../resources/views/' . $folerEdit . '/' . $file)) {
             throw new \Exception('Không tìm thấy file');
         }
+        return response()->file('../resources/views/' . $folerEdit . '/' . $file);
     }
 
     public function update(Request $request)
@@ -79,25 +76,27 @@ class StaticFileController extends ApiController
 
         $folerEdit = config('static-file.folder_edit');
 
-        if ($request->file) {
-            if (strpos($request->file, $folerEdit) !== 0) {
-                throw new \Exception('Không thể edit file');
-            }
-            $file = '../resources/views/' . $request->file;
-            $data = $request->content;
-            if (is_file($file)) {
-                $fileOpen = fopen($file, 'w');
-                if (!$fileOpen) {
-                    throw new \Exception('Mở file không thành công');
-                } else {
-                    fwrite($fileOpen, $data);
-                    fclose($fileOpen);
-                    return response()->file($file);
-                }
-            } else {
-                throw new \Exception('Không tìm thấy file');
-            }
+        $file = $request->file;
+
+        if (!$file) {
+            throw new \Exception('Không tìm thấy file');
         }
-        throw new \Exception('Không tìm thấy file');
+
+        $pathFile = '../resources/views/' . $folerEdit . '/' . $file;
+        $data     = $request->content;
+
+        if (!is_file($pathFile)) {
+            throw new \Exception('Không tìm thấy file');
+        }
+
+        $fileOpen = fopen($pathFile, 'w');
+
+        if (!$fileOpen) {
+            throw new \Exception('Mở file không thành công');
+        }
+
+        fwrite($fileOpen, $data);
+        fclose($fileOpen);
+        return response()->file($pathFile);
     }
 }
