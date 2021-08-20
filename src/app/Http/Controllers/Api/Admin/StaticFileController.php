@@ -16,6 +16,9 @@ class StaticFileController extends ApiController
                 ['except' => config('static-file.auth_middleware.admin.except')]
             );
         }
+        else {
+            throw new Exception("Admin middleware configuration is required");
+        }
     }
 
     public function recursiveDirectoryIterator($directory = null, $files = array())
